@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Amtsschimmel: Der Weg zur Pension</title>
+<style>
+:root{--bg:#e6eae7;--paper:#fbfbf7;--ink:#1c2420;--mute:#5b6861;--green:#2f5d50;--blue:#1d3b8b;--red:#b3261e;--line:#c3ccc6;--ok:#2d6a3a;--btn:#eef2ee;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#131a16;--paper:#1d2521;--ink:#e6ebe7;--mute:#9aa8a0;--green:#6fb39f;--blue:#8fa8f0;--red:#f0867e;--line:#34413a;--ok:#7fcf8c;--btn:#26302b}}
+:root[data-theme="dark"]{--bg:#131a16;--paper:#1d2521;--ink:#e6ebe7;--mute:#9aa8a0;--green:#6fb39f;--blue:#8fa8f0;--red:#f0867e;--line:#34413a;--ok:#7fcf8c;--btn:#26302b}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Helvetica Neue",Arial,sans-serif}
+main{max-width:640px;margin:0 auto;padding:16px}
+h1{font:700 1.5rem/1.2 Georgia,"Times New Roman",serif;margin:8px 0 2px;color:var(--green)}
+.sub{color:var(--mute);margin:0 0 14px;font-size:.9rem}
+.sheet{background:var(--paper);border:1px solid var(--line);border-left:6px solid var(--green);border-radius:3px;padding:14px 16px;margin-bottom:12px;position:relative}
+.rank{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:.9rem;color:var(--mute);margin-bottom:8px}
+.track{height:12px;background:var(--btn);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--green);transition:width .4s}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.stat{font-size:.8rem;color:var(--mute)}
+.stat b{display:block;color:var(--ink);font-size:.85rem}
+.stat .track{height:8px;margin-top:4px}
+.stat .n i{background:var(--ok)}.stat .a i{background:var(--red)}.stat .m i{background:var(--blue)}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:12px;font-size:.7rem;text-align:center}
+.cal span{border:1px dashed var(--line);border-radius:3px;padding:4px 2px;color:var(--mute);min-height:30px;display:flex;align-items:center;justify-content:center}
+.cal span.on{border:1px solid var(--blue);background:var(--blue);color:#fff}
+.az{font:.8rem "Courier New",monospace;color:var(--mute)}
+.case h2,.res h2{font:700 1.15rem/1.3 "Courier New",monospace;margin:4px 0 6px}
+.case p,.res p{margin:6px 0}
+.btns{display:grid;gap:8px;margin-top:12px}
+button{font:inherit;text-align:left;background:var(--btn);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:10px 12px;cursor:pointer}
+button:hover{border-color:var(--green)}
+button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+button small{display:block;color:var(--mute);font-size:.8rem}
+button.go{background:var(--green);color:#fff;border-color:var(--green);text-align:center;font-weight:700}
+.stamp{display:inline-block;border:3px solid var(--red);color:var(--red);font:700 1.1rem "Courier New",monospace;padding:2px 10px;border-radius:4px;transform:rotate(-5deg);margin:6px 0;letter-spacing:1px;animation:pop .35s ease-out}
+.stamp.ok{border-color:var(--blue);color:var(--blue)}
+@keyframes pop{from{transform:rotate(-5deg) scale(2);opacity:0}to{transform:rotate(-5deg) scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.stamp{animation:none}.track i{transition:none}}
+.eff{font-size:.85rem;color:var(--mute)}
+.warn{color:var(--red)}
+footer{color:var(--mute);font-size:.75rem;text-align:center;margin:18px 0 8px}
+</style>
+</head>
+<body>
+<main>
+<h1>Amtsschimmel</h1>
+<p class="sub">Dein Weg zur Pension. Überlebe 24 Quartale im Dienst, ohne zuständig zu sein.</p>
+<div class="sheet" id="top"></div>
+<div id="stage"></div>
+<footer>Satire. Ähnlichkeiten mit real existierenden Ämtern sind rein zufällig und ausdrücklich liebevoll.</footer>
+</main>
+<script>
+const TOTAL=24;
+const RANKS=["Inspektoranwärter","Sachbearbeiter (A9)","Obersachbearbeiter (A10)","Amtsrat (A12)","Oberamtsrat (A13)","Amtsdirektor (A14)"];
+const CASES=[
+["Antrag auf Genehmigung eines Antrags","Der Antrag ist vollständig. Das hat es noch nie gegeben."],
+["Wer ist für den kaputten Gehweg zuständig?","Ein Bürger fragt. Der Gehweg gehört laut Karte dem Fluss."],
+["Anfrage: Wann ist meine Anfrage von letzter Woche bearbeitet?","Die Anfrage liegt unter der Anfrage."],
+["Formular 17b ohne Formular 17a","Formular 17a wurde 2009 abgeschafft, ist aber Pflicht."],
+["Beschwerde über das Beschwerdeformular","Das Formular ist zu lang, sagt der Bürger. Auf 14 Seiten."],
+["Hund ohne Steuermarke","Der Hund bestreitet seine Zuständigkeit. Zu Recht."],
+["Hecke ist 3 cm zu hoch","Der Nachbar hat ein Foto, ein Maßband und Zeit."],
+["Presseanfrage: bis gestern beantworten","Frist: gestern, 12 Uhr. Es ist Freitag, 11:58."],
+["E-Mail mit dem Betreff DRINGEND","Inhalt: 'Haben Sie mal kurz?'"],
+["Ein Fax liegt im Postfach","Niemand weiß, woher. Niemand weiß, wohin damit."],
+["Bürger möchte kurz was fragen","Geschätzte Dauer: 2 Stunden. Er hat Kuchen dabei."],
+["Ausschreibung für eine Ausschreibung","Gesucht wird ein Büro, das eine Ausschreibung schreibt."],
+["Bitte um Stellungnahme zur Stellungnahme","Frist: sofort. Beteiligte: 11. Zuständige: unklar."],
+["Antrag auf Fristverlängerung der Frist","Die Frist läuft heute ab. Wie viele Fristen gibt es eigentlich?"]
+];
+const AMTER=["das Amt für Ämterfragen","die Stabsstelle für Stabsstellen","Referat Sonstiges","Sachgebiet 4.2.1 (aktuell unbesetzt)","die Untere Verwaltungsvorschriftenbehörde","das Bundesamt für Zuständigkeitsklärung","die Nachbargemeinde (die gibt es nicht mehr)"];
+const MEETS=["Jour fixe zum Jour fixe","Vorbesprechung der Besprechung","Abstimmungsrunde (14 Teilnehmer, 2 Redebeiträge)","Workshop: Wie wollen wir künftig zusammenarbeiten?","Runder Tisch (eckiger Tisch war nicht verfügbar)","Lenkungskreis zur Lenkung des Lenkungskreises"];
+const FAILS=["Oh nein! Du bist zuständig. §1 Abs. 1 ist eindeutig.","Zu spät weggeprüft. Die Zuständigkeit klebt an dir wie ein Post-it.","Der Organisationsplan sagt: Das bist du. Seit 1987.","Du hast nicht rechtzeitig weggeprüft. Der Vorgang hat dich gefunden."];
+const EVENTS=[
+{t:"Terminkalender-Kollision",d:"Zwei Pflichttermine liegen auf derselben Uhrzeit. Ordne deinen Kalender neu.",o:[["Einen Termin auf 2027 verlegen","Abstimmung +15, Nerven -3",{m:15,n:-3}],["Zu beiden gehen, im Wechsel","Abstimmung +30, Nerven -12",{m:30,n:-12}]]},
+{t:"Haushaltssperre",d:"Alle Ausgaben sind gesperrt. Auch Kaffee.",o:[["Kaffee aus eigener Tasche","Nerven -5",{n:-5}],["Dienstreise 'Kostensenkung' beantragen","Abstimmung +20, Nerven +8",{m:20,n:8}]]},
+{t:"Bürger ohne Termin",d:"Er steht einfach da. Mit Unterlagen. In einer Klarsichthülle.",o:[["In die Kaffeeküche ducken","Nerven +8, Aktenberg +1",{n:8,a:1}],["Zuständigkeit prüfen, vor Ort","Aktenberg -1, Nerven -10",{a:-1,n:-10}]]},
+{t:"Digitalisierung!",d:"Das neue Fachverfahren ist da. Es druckt alles aus, damit es abgelegt werden kann.",o:[["Drei Tage Schulung besuchen","Abstimmung +25, Nerven -6",{m:25,n:-6}],["Weiter mit Papier","Aktenberg +2, Nerven +5",{a:2,n:5}]]},
+{t:"Betriebsausflug",d:"Ziel: Wandern. Mit Stempelkarte.",o:[["Mitgehen","Nerven +20, Abstimmung +10",{n:20,m:10}],["Liegengebliebenes aufarbeiten","Aktenberg -1, Nerven -8",{a:-1,n:-8}]]},
+{t:"Der Personalrat fragt nach",d:"Er erkundigt sich sehr freundlich nach deinem Wohlbefinden.",o:[["Lächeln und winken","Nerven +5",{n:5}],["Ehrlich antworten","Nerven +15, Abstimmung +15 (Gesprächsrunde)",{n:15,m:15}]]}
+];
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+const cl=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+let s,evq,cur,done;
+const hudEl=document.getElementById('top'),stage=document.getElementById('stage');
+
+function start(){s={r:0,n:100,a:2,m:50,w:0,mt:0,k:0,sb:0};evq=shuf(EVENTS);done=false;next();}
+function rank(){return RANKS[Math.min(5,Math.floor(s.r/5))]}
+function age(){return 25+Math.round(s.r*42/TOTAL)}
+function hud(){
+const slots=["Jour fixe","Abstimmung","Vorbespr.","Nachbespr.","Runder Tisch"],f=Math.round(s.m/20),d=["Mo","Di","Mi","Do","Fr"];
+hudEl.innerHTML=`<div class="rank"><span>${rank()}</span><span>Dienstalter ${age()} von 67 Jahren</span></div>
+<div class="track" role="progressbar" aria-label="Weg zur Pension" aria-valuenow="${Math.round(s.r/TOTAL*100)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${s.r/TOTAL*100}%"></i></div>
+<div class="stats">
+<div class="stat n">Nerven<b>${s.n}</b><div class="track"><i style="width:${s.n}%"></i></div></div>
+<div class="stat a">Aktenberg<b>${s.a} von 10</b><div class="track"><i style="width:${s.a*10}%"></i></div></div>
+<div class="stat m">Abstimmung<b>${s.m} %</b><div class="track"><i style="width:${s.m}%"></i></div></div></div>
+<div class="cal" aria-label="Terminkalender">${slots.map((x,i)=>`<span class="${i<f?'on':''}">${d[i]}<br>${i<f?x:'frei'}</span>`).join('')}</div>`;
+}
+function next(){
+hud();
+if(s.r>=TOTAL)return end(true);
+if(s.r%4===3){cur={ev:evq.pop()};const e=cur.ev;
+stage.innerHTML=`<div class="sheet case"><div class="az">Ereignis, Quartal ${s.r+1}</div><h2>${e.t}</h2><p>${e.d}</p><div class="btns">${e.o.map((o,i)=>`<button data-e="${i}">${o[0]}<small>${o[1]}</small></button>`).join('')}</div></div>`;
+}else{cur={c:pick(CASES)};
+stage.innerHTML=`<div class="sheet case"><div class="az">Aktenzeichen ${Math.floor(Math.random()*9000+1000)}/${25+Math.floor(s.r/2)}-${String.fromCharCode(65+Math.floor(Math.random()*26))} | Quartal ${s.r+1} von ${TOTAL}</div><h2>${cur.c[0]}</h2><p>${cur.c[1]}</p>
+<div class="btns">
+<button data-k="weg">Zuständigkeit wegprüfen<small>Erfolgschance ${Math.round(Math.min(.9,.55+.05*s.w)*100)} %, wächst mit Erfahrung</small></button>
+<button data-k="meet">Meeting ansetzen<small>Abstimmung +35, Nerven -6. Bitte ausreichend Meetings planen!</small></button>
+<button data-k="kaffee">Kaffeepause<small>Nerven +18, Aktenberg +1</small></button>
+<button data-k="self">Selbst bearbeiten<small>Aktenberg -2, Nerven -8. Ungewöhnlich.</small></button></div></div>`;
+}
+}
+function apply(e){for(const k in e){if(k==='n')s.n=cl(s.n+e.n,0,100);if(k==='a')s.a=cl(s.a+e.a,0,10);if(k==='m')s.m=cl(s.m+e.m,0,100);}}
+function resolve(msg,stamp,ok,eff){
+const lines=[];
+if(s.m<20){lines.push("Chef: 'Bitte plane ausreichend Meetings!' (Nerven -8)");apply({n:-8});}
+s.m=cl(s.m-14,0,100);
+if(Math.random()<.25){lines.push("Der Posteingang hat zugeschlagen. Aktenberg +1.");apply({a:1});}
+const old=Math.floor(s.r/5);s.r++;
+if(s.r<TOTAL&&Math.floor(s.r/5)>old){lines.push("Beförderung zum "+rank()+"! Gehaltserhöhung: 41,17 € brutto. Nerven +5.");apply({n:5});}
+hud();
+if(s.n<=0)return end(false,'n');
+if(s.a>=10)return end(false,'a');
+stage.innerHTML=`<div class="sheet res"><span class="stamp ${ok?'ok':''}">${stamp}</span><p>${msg}</p><p class="eff">${eff}</p>${lines.map(l=>`<p class="warn">${l}</p>`).join('')}<div class="btns"><button class="go" data-go="1">${s.r>=TOTAL?'Zur Verabschiedung':'Nächster Vorgang'}</button></div></div>`;
+}
+function end(win,why){
+done=true;
+if(win){
+const t=s.w>=10?"Meister:in der Nicht-Zuständigkeit":s.mt>=10?"Großmeister:in der Besprechung":"Aussitzer:in mit Auszeichnung";
+stage.innerHTML=`<div class="sheet res"><span class="stamp ok">RUHESTAND GENEHMIGT</span><h2>Du hast die Pension erreicht!</h2><p>Mit 67 Jahren erhältst du eine Urkunde, einen Blumenstrauß (Sammelspende: 37,50 €) und eine Rede, die der Chef gerade erst überfliegt.</p><p><b>Dein Titel: ${t}</b></p><p class="eff">Weggeprüfte Zuständigkeiten: ${s.w}. Meetings angesetzt: ${s.mt}. Kaffeepausen: ${s.k}. Selbst bearbeitete Vorgänge: ${s.sb} (verdächtig).</p><div class="btns"><button class="go" data-re="1">Nochmal von vorn (Dienstjahr 1)</button></div></div>`;
+}else{
+stage.innerHTML=`<div class="sheet res"><span class="stamp">DIENST GEHT WEITER</span><h2>${why==='n'?'Die Nerven sind durch.':'Der Aktenberg ist eingestürzt.'}</h2><p>${why==='n'?"Der Amtsarzt untersucht dich gründlich und stellt fest: voll dienstfähig. Also zurück an den Schreibtisch.":"Man findet dich 2031 bei der Archivierung. Der Vorgang ist weiterhin offen."}</p><p class="eff">Durchgehalten bis Dienstalter ${age()} von 67.</p><div class="btns"><button class="go" data-re="1">Neuer Versuch</button></div></div>`;
+}
+}
+stage.addEventListener('click',ev=>{
+const b=ev.target.closest('button');if(!b)return;
+if(b.dataset.re)return start();
+if(b.dataset.go)return next();
+if(b.dataset.e!==undefined){const o=cur.ev.o[+b.dataset.e];apply(o[2]);return resolve(cur.ev.d,'GEREGELT',true,o[0]+" ("+o[1]+")");}
+const k=b.dataset.k;
+if(k==='weg'){
+if(Math.random()<Math.min(.9,.55+.05*s.w)){s.w++;apply({n:3});resolve("Rechtzeitig weggeprüft! Der Vorgang wandert zu "+pick(AMTER)+". Dort wird er sich wohlfühlen.","WEITERGELEITET",true,"Nerven +3");}
+else{apply({a:2,n:-12});resolve(pick(FAILS),"ZUSTÄNDIG!",false,"Aktenberg +2, Nerven -12");}
+}else if(k==='meet'){
+const full=s.m>=90;apply({m:35,n:-6});s.mt++;let extra="";
+if(full){apply({a:1});extra=" Der Kalender ist voll, zum Arbeiten kommt niemand. Aktenberg +1.";}
+if(Math.random()<.2){apply({n:-4});extra+=" Das Meeting hätte eine E-Mail sein können. Nerven -4.";}
+resolve("Angesetzt: "+pick(MEETS)+". Der Vorgang ist 'in Abstimmung' und damit bis auf Weiteres sicher."+extra,"IN ABSTIMMUNG",true,"Abstimmung +35, Nerven -6");
+}else if(k==='kaffee'){
+s.k++;apply({n:18,a:1});resolve("Kaffeeküche. Du erfährst, wer bald in Pension geht und wer wen nicht leiden kann. Unbezahlbar.","PAUSE",true,"Nerven +18, Aktenberg +1");
+}else{
+s.sb++;apply({a:-2,n:-8});let m="Du hast den Vorgang einfach bearbeitet. Die Kollegen tuscheln.";
+if(Math.random()<.15){apply({n:10});m="Der Bürger bedankt sich ausdrücklich. Du bist irritiert und schreibst es auf. (Nerven +10)";}
+resolve(m,"ERLEDIGT",true,"Aktenberg -2, Nerven -8");
+}
+});
+start();
+</script>
+</body>
+</html>
